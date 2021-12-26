@@ -22,7 +22,7 @@ loop nam arr = if result == arr then arr else loop nam result
 
 replace :: Eq a => [a] -> [a] -> [a] -> Bool -> [[a]]
 replace a b arr end
-  | length arr >= length a = fst lastElement : (if end && snd lastElement then [drop (length a) arr] else (replace a b (if snd lastElement then drop (length a) arr else tail arr) end))
+  | length arr >= length a = fst lastElement : (if not end && snd lastElement then [drop (length a) arr] else (replace a b (if snd lastElement then drop (length a) arr else tail arr) end))
   | otherwise = [arr]
   where
     check arr

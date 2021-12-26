@@ -5,20 +5,26 @@ module Lib
 someFunc :: IO ()
 someFunc = putStrLn "someFunc"
 
-loop :: Eq a => ([a] -> [a]) -> [a] -> [a]
-loop nam arr = if result == arr then arr else loop nam result
+loop :: Eq a => (([a], Bool) -> ([a], Bool)) -> [a] -> Bool -> [a]
+loop nam arr end
+ | not $ snd result = fst result
+ | otherwise = if fst result == arr then arr else loop nam (fst result) $ True
   where
-    result = nam arr
+    result = nam (arr, end)
 
-(-->) :: Eq a => [a] -> [a] -> [a] -> [a]
-(-->) a b arr = if result == arr then arr else (-->) a b result
+(-->) :: Eq a => [a] -> [a] -> ([a], Bool) -> ([a], Bool)
+(-->) a b arr
+ | snd arr = (result, True)
+ | otherwise = arr
   where
-    result = concat $ replace a b arr False
+    result = concat $ replace a b (fst arr) True
 
-(==>) :: Eq a => [a] -> [a] -> [a] -> [a]
-(==>) a b arr = if result == arr then arr else (==>) a b result
+(==>) :: Eq a => [a] -> [a] -> ([a], Bool) -> ([a], Bool)
+(==>) a b arr
+ | snd arr = (result, False)
+ | otherwise = arr
   where
-    result = concat $ replace a b arr True
+    result = concat $ replace a b (fst arr) True
 
 replace :: Eq a => [a] -> [a] -> [a] -> Bool -> [[a]]
 replace a b arr end

@@ -1,27 +1,31 @@
 module Lib
-    ( someFunc, loop, (-->), (==>), replace
+    ( someFunc, loop, (-->), (==>), replace, increment
     ) where
 
 someFunc :: IO ()
-someFunc = putStrLn "someFunc"
+someFunc = (print.
+  (+1)) 5
 
-loop :: Eq a => (([a], Bool) -> ([a], Bool)) -> [a] -> Bool -> [a]
-loop nam arr end
- | not $ snd result = fst result
- | otherwise = if fst result == arr then arr else loop nam (fst result) $ True
+loop :: Eq a => [a] -> (([a], (Bool, Bool)) -> ([a], (Bool, Bool))) -> [a]
+loop arr nam = loop' nam arr True
+
+loop' :: Eq a => (([a], (Bool, Bool)) -> ([a], (Bool, Bool))) -> [a] -> Bool -> [a]
+loop' nam arr end
+ | not $ fst.snd $ result = fst result
+ | otherwise = if fst result == arr then arr else loop' nam (fst result) $ True
   where
-    result = nam (arr, end)
+    result = nam (arr, (end, True))
 
-(-->) :: Eq a => [a] -> [a] -> ([a], Bool) -> ([a], Bool)
+(-->) :: Eq a => [a] -> [a] -> ([a], (Bool, Bool)) -> ([a], (Bool, Bool))
 (-->) a b arr
- | snd arr = (result, True)
+ | (snd.snd $ arr) && (fst.snd $ arr) && (fst arr /= result)= (result, (True, False))
  | otherwise = arr
   where
     result = concat $ replace a b (fst arr) True
 
-(==>) :: Eq a => [a] -> [a] -> ([a], Bool) -> ([a], Bool)
+(==>) :: Eq a => [a] -> [a] -> ([a], (Bool, Bool)) -> ([a], (Bool, Bool))
 (==>) a b arr
- | snd arr = (result, False)
+ | (snd.snd $ arr) && (fst.snd $ arr) && (fst arr /= result) = (result, (False, False))
  | otherwise = arr
   where
     result = concat $ replace a b (fst arr) True
@@ -35,3 +39,15 @@ replace a b arr end
       | arr == a = (b, True)
       | otherwise = ([head arr], False)
     lastElement = check (take (length a) arr)
+
+increment :: [Char] -> [Char]
+increment arr = loop arr (
+  ("" --> "*").
+  ("/"==>"1").
+  ("0/"==>"1").
+  ("1/"-->"/0").
+  ("1*"-->"/0").
+  ("0*"==>"1").
+  ("*1"-->"1*").
+  ("*0"-->"0*")
+  )

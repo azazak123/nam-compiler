@@ -3,29 +3,51 @@ module Lib
     ) where
 
 someFunc :: IO ()
-someFunc = putStrLn "someFunc"
+someFunc = (print.
+  (+1)) 5
 
-loop :: Eq a => ([a] -> [a]) -> [a] -> [a]
-loop nam arr = if result == arr then arr else loop nam result
-  where
-    result = nam arr
+loop :: Eq a => [a] -> (([a], (Bool, Bool)) -> ([a], (Bool, Bool))) -> [a]
+loop arr nam = loop' nam arr True
 
-(-->) :: Eq a => [a] -> [a] -> [a] -> [a]
-(-->) a b arr = if result == arr then arr else (-->) a b result
+loop' :: Eq a => (([a], (Bool, Bool)) -> ([a], (Bool, Bool))) -> [a] -> Bool -> [a]
+loop' nam arr end
+ | not $ fst.snd $ result = fst result
+ | otherwise = if fst result == arr then arr else loop' nam (fst result) $ True
   where
-    result = concat $ replace a b arr False
+    result = nam (arr, (end, True))
 
-(==>) :: Eq a => [a] -> [a] -> [a] -> [a]
-(==>) a b arr = if result == arr then arr else (==>) a b result
+(-->) :: Eq a => [a] -> [a] -> ([a], (Bool, Bool)) -> ([a], (Bool, Bool))
+(-->) a b arr
+ | (snd.snd $ arr) && (fst.snd $ arr) && (fst arr /= result)= (result, (True, False))
+ | otherwise = arr
   where
-    result = concat $ replace a b arr True
+    result = concat $ replace a b (fst arr) True
+
+(==>) :: Eq a => [a] -> [a] -> ([a], (Bool, Bool)) -> ([a], (Bool, Bool))
+(==>) a b arr
+ | (snd.snd $ arr) && (fst.snd $ arr) && (fst arr /= result) = (result, (False, False))
+ | otherwise = arr
+  where
+    result = concat $ replace a b (fst arr) True
 
 replace :: Eq a => [a] -> [a] -> [a] -> Bool -> [[a]]
 replace a b arr end
-  | length arr >= length a = fst lastElement : (if not end && snd lastElement then [drop (length a) arr] else (replace a b (if snd lastElement then drop (length a) arr else tail arr) end))
+  | length arr >= length a = fst lastElement : (if end && snd lastElement then [drop (length a) arr] else (replace a b (if snd lastElement then drop (length a) arr else tail arr) end))
   | otherwise = [arr]
   where
     check arr
       | arr == a = (b, True)
       | otherwise = ([head arr], False)
     lastElement = check (take (length a) arr)
+
+increment :: [Char] -> [Char]
+increment arr = loop arr (
+  ("" --> "*").
+  ("/"==>"1").
+  ("0/"==>"1").
+  ("1/"-->"/0").
+  ("1*"-->"/0").
+  ("0*"==>"1").
+  ("*1"-->"1*").
+  ("*0"-->"0*")
+  ) 

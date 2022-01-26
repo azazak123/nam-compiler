@@ -13,7 +13,7 @@ int main()
 
     string rule, decryptStr = "(\"\" --> \"\")";
     
-    out.open("decrypt.txt");
+    out.open("decrypt.hs");
     
 	out << "import Lib\nmain =\n  getLine\n    >>= (putStrLn.(\'loop\'\n      (\n";
 

@@ -15,6 +15,8 @@ int main()
     
     out.open("decrypt.txt");
     
+	out << "import Lib\nmain =\n\tgetLine\n\t\t>>= (putStrLn.(\'loop\'\n\t\t\t(\n";
+
     if (in.is_open())
     {	
     	while (getline(in, rule))
@@ -44,15 +46,17 @@ int main()
     		
     		if (rule.find("=>"))
     		{
-    			out << decryptStr.replace(decryptStr.find("-"), 2, "==") << endl;
+    			out << "\t\t\t\t" << decryptStr.replace(decryptStr.find("-"), 2, "==") << endl;
 			}
     		else 
     		{
-    			out << decryptStr << endl;
+    			out << "\t\t\t\t" << decryptStr << endl;
 			}
     		
     		i = 0;
     		decryptStr = ". (\"\" --> \"\")";
 		}
+
+		out << "\t\t\t)\n\t\t))";
 	}
 }

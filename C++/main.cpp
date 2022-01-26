@@ -50,12 +50,12 @@ int main()
     		if (rule.find("=>"))
     		{
     			outHs << "        " << decryptStr.replace(decryptStr.find("-"), 2, "==") << endl;
-    			outTxt << "        " << decryptStr.replace(decryptStr.find("-"), 2, "==") << endl;
+    			outTxt << "        " << decryptStr << endl;
 			}
     		else 
     		{
     			outHs << "        " << decryptStr << endl;
-    			outTxt << "        " << decryptStr.replace(decryptStr.find("-"), 2, "==") << endl;
+    			outTxt << "        " << decryptStr << endl;
 			}
     		
     		i = 0;

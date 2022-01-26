@@ -7,15 +7,18 @@ using namespace std;
 int main()
 {
 	ifstream in("crypt.txt");
-	ofstream out;
+	ofstream outHs, outTxt;
 	
     int i = 0, j = 0; 
 
     string rule, decryptStr = "(\"\" --> \"\")";
     
-    out.open("decrypt.hs");
+    outHs.open("decrypt.hs");
+    outTxt.open("decrypt.txt");
     
-	out << "import Lib\nmain =\n  getLine\n    >>= (putStrLn.(\'loop\'\n      (\n";
+    
+	outHs << "import Lib\nmain =\n  getLine\n    >>= (putStrLn.(\'loop\'\n      (\n";
+	outTxt << "import Lib\nmain =\n  getLine\n    >>= (putStrLn.(\'loop\'\n      (\n";
 
     if (in.is_open())
     {	
@@ -46,17 +49,20 @@ int main()
     		
     		if (rule.find("=>"))
     		{
-    			out << "        " << decryptStr.replace(decryptStr.find("-"), 2, "==") << endl;
+    			outHs << "        " << decryptStr.replace(decryptStr.find("-"), 2, "==") << endl;
+    			outTxt << "        " << decryptStr.replace(decryptStr.find("-"), 2, "==") << endl;
 			}
     		else 
     		{
-    			out << "        " << decryptStr << endl;
+    			outHs << "        " << decryptStr << endl;
+    			outTxt << "        " << decryptStr.replace(decryptStr.find("-"), 2, "==") << endl;
 			}
     		
     		i = 0;
     		decryptStr = ". (\"\" --> \"\")";
 		}
 
-		out << "      )\n    ))";
+		outHs << "      )\n    ))";
+		outTxt << "      )\n    ))";
 	}
 }

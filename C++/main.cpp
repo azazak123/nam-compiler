@@ -13,7 +13,7 @@ int main()
 
     string rule, decryptStr = "(\"\" --> \"\")";
     
-    outHs.open("decrypt.hs");
+    outHs.open("../Haskell/app/Main.hs");
     outTxt.open("decrypt.txt");
     
     

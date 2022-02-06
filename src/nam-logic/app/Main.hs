@@ -1,7 +1,7 @@
 import Lib
 main =
   getLine
-    >>= (putStrLn.('loop'
+    >>= (putStrLn.(`loop`
       (
         ("/" ==> "1")
         . ("/0" ==> "1")

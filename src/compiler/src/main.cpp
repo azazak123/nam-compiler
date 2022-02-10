@@ -22,43 +22,41 @@ int main()
 	if (in.is_open())
 	{
 		while (getline(in, rule))
-		{
-			for (int z = 0; z < sizeof(rule); z++)
-			{
-				if (rule[z] == ' ')
-				{
-					rule.erase(z, 1);
+    		{
+    			for (int z = 0; z < sizeof(rule); z++)
+    			{
+    				if (rule[z] == ' ')
+    				{
+    					rule.erase(z, 1);
 				}
 			}
-
-			for (i; i < sizeof(rule); i++)
-			{
-				if (rule[i] == '-' || rule[i] == '=')
+			
+    			for (i; i < sizeof(rule); i++)
+    			{	
+    				if (rule[i] == '=')
+    				{
+    					decryptStr.replace(decryptStr.find("--"), 2, "==");
+    				
+    					break;
+				}
+				else if (rule[i] == '-')
 				{
 					break;
 				}
-
+				
 				decryptStr.insert(decryptStr.find('\"') + 1, 1, rule[i]);
 			}
+	
+    			for (i += 2, j; i < rule.length(); i++, j++)
+    			{
+        			decryptStr.insert(decryptStr.find('>') + 3, 1, rule[i]);
+    			}
+    		
+    			outHs << "        " << decryptStr << endl;
+    			outTxt << "        " << decryptStr << endl;	
 
-			for (i += 2, j; i < rule.length(); i++, j++)
-			{
-				decryptStr.insert(decryptStr.find('>') + 3, 1, rule[i]);
-			}
-
-			if (rule.find("=>"))
-			{
-				outHs << "        " << decryptStr.replace(decryptStr.find("-"), 2, "==") << endl;
-				outTxt << "        " << decryptStr << endl;
-			}
-			else
-			{
-				outHs << "        " << decryptStr << endl;
-				outTxt << "        " << decryptStr << endl;
-			}
-
-			i = 0;
-			decryptStr = ". (\"\" --> \"\")";
+    			i = 0;
+    			decryptStr = ". (\"\" --> \"\")";
 		}
 
 		outHs << "      )\n    ))";

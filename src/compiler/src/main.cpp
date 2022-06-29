@@ -1,65 +1,80 @@
-#include <iostream>
+#include <cstddef>
 #include <fstream>
+#include <iostream>
 #include <string>
+#include <vector>
 
 using namespace std;
 
-int main()
-{
-	ifstream in("crypt.txt");
-	ofstream outHs, outTxt;
+int main(int argc, char **argv) {
 
-	int i = 0, j = 0;
+  string namFilePath = string(argv[1]);
 
-	string rule, decryptStr = "(\"\" --> \"\")";
+  ifstream in(namFilePath);
+  ofstream outHs, outTxt;
 
-	outHs.open("../Haskell/app/Main.hs");
-	outTxt.open("decrypt.txt");
+  int i = 0, j = 0;
 
-	outHs << "import Lib\nmain =\n  getLine\n    >>= (putStrLn.(`loop`\n      (\n";
-	outTxt << "import Lib\nmain =\n  getLine\n    >>= (putStrLn.(`loop`\n      (\n";
+  string rule, decryptStr = "(\"\" --> \"\")";
 
-	if (in.is_open())
-	{
-		while (getline(in, rule))
-    		{
-    			for (int z = 0; z < sizeof(rule); z++)
-    			{
-    				if (rule[z] == ' ')
-    				{
-    					rule.erase(z, 1);
-				}
-			}
-			
-    			for (i; i < sizeof(rule); i++)
-    			{	
-    				if (rule[i] == '=')
-    				{
-    					decryptStr.replace(decryptStr.find("--"), 2, "==");
-    				
-    					break;
-				}
-				else if (rule[i] == '-')
-				{
-					break;
-				}
-				
-				decryptStr.insert(decryptStr.find('\"') + 1, 1, rule[i]);
-			}
-	
-    			for (i += 2, j; i < rule.length(); i++, j++)
-    			{
-        			decryptStr.insert(decryptStr.find('>') + 3, 1, rule[i]);
-    			}
-    		
-    			outHs << "        " << decryptStr << endl;
-    			outTxt << "        " << decryptStr << endl;	
+  outHs.open("./lib/Main.hs");
 
-    			i = 0;
-    			decryptStr = ". (\"\" --> \"\")";
-		}
+  outHs
+      << "import Lib\nmain =\n  getLine\n    >>= (putStrLn.(`loop`\n      (\n";
 
-		outHs << "      )\n    ))";
-		outTxt << "      )\n    ))";
-	}
+  std::vector<string> commands = vector<string>();
+
+  if (in.is_open()) {
+    while (getline(in, rule)) {
+      commands.push_back(rule);
+    }
+  } else {
+    cout << "File not found" << endl;
+    return 0;
+  }
+
+  for (int index = commands.size() - 1; index >= 0; index--) {
+
+    rule = commands[index];
+
+    for (int z = 0; z < rule.length(); z++) {
+      if (rule[z] == ' ') {
+        rule.erase(z, 1);
+      }
+    }
+
+    for (; i < rule.length(); i++) {
+      if (rule[i] == '=') {
+        decryptStr.replace(decryptStr.find("--"), 2, "==");
+
+        break;
+      } else if (rule[i] == '-') {
+        break;
+      }
+
+      decryptStr.insert(decryptStr.find("\" -"), 1, rule[i]);
+    }
+
+    int second = i + 2;
+
+    for (i += 2; i < rule.length(); i++, j++) {
+      string searchStr = "> \"" + rule.substr(second, i - second);
+      int index = decryptStr.find(searchStr) + 3 + i - second;
+      decryptStr.insert(index, 1, rule[i]);
+    }
+
+    outHs << "        " << decryptStr << endl;
+
+    i = 0;
+    decryptStr = ". (\"\" --> \"\")";
+  }
+
+  outHs << "      )\n    ))";
+
+  in.close();
+  outHs.close();
+
+  system("cd ./lib && ghc  -o ../nam -threaded -rtsopts "
+         "-with-rtsopts=-N --make "
+         "Main.hs");
 }

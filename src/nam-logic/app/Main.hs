@@ -1,0 +1,3 @@
+import Lib
+
+main = someFunc

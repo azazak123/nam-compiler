@@ -19,6 +19,7 @@ cd program                    #compiler has been created in program directory
 ## NAM syntax
 
 a -> b -- simple substitution
+
 a => b -- final substitution
 
 Example is provided in nam_example.txt
